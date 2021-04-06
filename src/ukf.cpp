@@ -23,6 +23,16 @@ UKF::UKF() {
 
   // initial covariance matrix
   P_ = MatrixXd(5, 5);
+  // initialise matrix  -high confidence with x,y so 1.0, lower confidence of vx, vy - 0.5
+  /*P_ <<   1.0, 0, 0, 0, 0,
+          0, 1.0, 0, 0, 0,
+          0, 0, 0.5, 0, 0,
+          0, 0, 0, 0.5, 0,
+          0, 0, 0, 0, 0.5;*/
+  // intialise covariance matrix as identity matrix
+  P_.topLeftCorner(5,5).setIdentity();
+  // modify values for intialisation
+  //P_ = P_ * 2.0;
 
   // Process noise standard deviation longitudinal acceleration in m/s^2
   std_a_ = 1.0; //30;
@@ -108,17 +118,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
         // save first timestamp
         time_us_ = meas_package.timestamp_;
 
-        // intialise covariance matrix as identity matrix
-        P_.topLeftCorner(5,5).setIdentity();
-        // modify values for intialisation
-        P_ = P_ * 2.0;
-        /*
-        P_ <<   2.0, 0, 0, 0, 0,
-                0, 1.0, 0, 0, 0,
-                0, 0, 2.0, 0, 0,
-                0, 0, 0, 1.0, 0,
-                0, 0, 0, 0, 1.0;
-        */
+
 
         if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
 
